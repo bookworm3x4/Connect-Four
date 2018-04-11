@@ -6,10 +6,9 @@
 
 '''
 TASK LIST:
-~ fix playAgain for new names format
-~ fix announceWinner
-~ make names into a global variable?
-~ import winningCombos from txt file?
+~ switch from dictionary to array
+~ create Board class
+~ change checkWinner to a function examining adjacent cells
 ~ create graphic interface
 '''
 
@@ -19,18 +18,18 @@ TASK LIST:
                         # MAIN FUNCTION(S) #
 
 def main():
-    names = SETUP()
-    PLAY(names)
+    SETUP()
+    PLAY()
 
 
 def SETUP():
     intro()
-    names = firstPlayer(players())
-    return names
+    players()
+    firstPlayer()
 
-def PLAY(names):
-    runGame(names)
-    playAgain(names)
+def PLAY():
+    runGame()
+    playAgain()
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -41,17 +40,17 @@ main()
     SETUP()
 	intro()
 	players()
-	firstPlayer(names)
-    PLAY(names)
-	runGame(names)
-	    getMove(names, turn)
-	    placeMove(names, turn, move)
+	firstPlayer()
+    PLAY()
+	runGame()
+	    getMove(turn)
+	    placeMove(turn, move)
 	    checkWinner(board, move)
 		possibleWins(move)
-            announceWinner(winner, names)
+            announceWinner(winner)
 	    nextTurn(turn)
-	playAgain(names)
-            PLAY(names)
+	playAgain()
+            PLAY()
 '''
 
 
@@ -60,22 +59,26 @@ main()
                         # MAJOR FUNCTIONS #
 
 def intro():
-    print("Welcome to Connect Four!\n")
-    print("Here's what the board looks like:")
+    print(welcomeMsg, end = "\n\n")
+    print("Here's what the board looks like:\n")
     printBoard(board)
+    print("On your turn, type the letter corresponding to",
+          "the column you want to drop your checker in.\n",
+          sep = "\n")
     print("Hit Enter to start game.")
     input()
     print("Let's get started!\n")
     
 def players():    
     print("Who's playing?")
+    global names
     names[0][0] = input("One player: ").capitalize()
     names[1][0] = input("The other player: ").capitalize()
     print()
-    return names
 
-def firstPlayer(names):
+def firstPlayer():
     i = coinFlip()
+    global names
     names[i][1] = "black"
     names[abs(i-1)][1] = "red"
     print(names[0][0], "is", names[0][1],"and",
@@ -85,23 +88,22 @@ def firstPlayer(names):
     names[1][2] = abs(j-1)
     print(names[j][0], "goes first.\n")
     print()
-    return names
 
-def runGame(names):
+def runGame():
     turn = names[0][2]
     for i in range(42):
-        move = getMove(names, turn)
-        move = placeMove(names, turn, move)
+        move = getMove(turn)
+        move = placeMove(turn, move)
         winner = checkWinner(board, move)
         if winner != "":
-            announceWinner(winner, names)
+            announceWinner(winner)
             break
         elif i == 41:
             print("Oops, looks like it's a draw!\n")
         else:
             turn = nextTurn(turn)
 
-def getMove(names, turn):
+def getMove(turn):
     move = input("It's " + names[turn][0] + "'s turn. Where do you want to drop your checker?\n> ").upper()
     print()
     while move not in columns or board[move + "6"] != " ":
@@ -112,7 +114,7 @@ def getMove(names, turn):
         print()
     return move
 
-def placeMove(names, turn, move):
+def placeMove(turn, move):
     if board[move + "1"] == " ":
         move = move + "1"
     elif board[move + "2"] == " ":
@@ -149,11 +151,11 @@ def possibleWins(move):
             toCheck.append(i)
     return toCheck
 
-def announceWinner(winner, names):
+def announceWinner(winner):
     for i in [0,1]:
         if winner in names[i]:
             winner = i
-    message = "Four in a row!", names[winner][0], "wins!"
+    message = "Four in a row! " + names[winner][0] + " wins!"
     bar = "*" * len(message)
     print(bar)
     print(message)
@@ -167,12 +169,18 @@ def nextTurn(T): # T = turn
         T = 0
     return T
 
-def playAgain(names):
+def playAgain():
     print("Game over. Play again?")
     again = input("> ").upper()[0]
     if again == "Y":
-        print("\nOkay, new game. This time", names[0], "goes first.\n")
-        PLAY(names)
+        global names
+        names[0][2], names[1][2] = names[1][2], names[0][2]
+        if names[0][2] == 0:
+            first = names[0][0]
+        else:
+            first = names[1][0]
+        print("\nOkay, new game. This time", first, "goes first.\n")
+        PLAY()
     else:
         print("Goodbye!\n")
         
@@ -197,6 +205,22 @@ def playAgain(names):
 import random
 def coinFlip():
     return random.randint(0, 1)
+
+welcomeMsg = """
+               W E L C O M E   T O
+  ____                                          _
+ / ___|  ___    ____    ____     ___    ___   _| |_
+| |     / _ \  |  _ \  |  _ \   / _ \  / __| |_   _|
+| |___ | |_| | | | | | | | | | |  __/ | |__    | |_
+ \____| \___/  |_| |_| |_| |_|  \___|  \___|    \__|
+            _____
+           |  ___|  ___    _   _    ___
+           | |__   / _ \  | | | |  / __|
+           |  __| | |_| | | |_| | | |
+           |_|     \___/   \____| |_|
+
+                 _for two players_
+"""
 
 board = {"A6":" ", "B6":" ", "C6":" ", "D6":" ", "E6":" ", "F6":" ", "G6":" ",
          "A5":" ", "B5":" ", "C5":" ", "D5":" ", "E5":" ", "F5":" ", "G5":" ",
