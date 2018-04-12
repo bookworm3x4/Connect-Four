@@ -1,16 +1,9 @@
 # connectFour.py
 
-# Simulation for a two-player game of Connect Four.
-
+# Emmett Wald
 # created 16 Mar. 2018
 
-'''
-TASK LIST:
-~ switch from dictionary to array
-~ create Board class
-~ change checkWinner to a function examining adjacent cells
-~ create graphic interface
-'''
+# Simulation for a two-player game of Connect Four.
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
