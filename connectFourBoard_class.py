@@ -40,10 +40,11 @@ class Board:
         # creates a row that displays nicely
         def printRow(row):
             row2print = " | "
-            for x in range(width):
-                if board[row][x] == 0:
-                    board[row][x] = " "
-                row2print.append(board[row][x] + " | ")
+            cells = self.array[row]
+            for x in range(self.width):
+                if cells[x] == 0:
+                    cells[x] = " "
+                row2print += cells[x] + " | "
             return row2print
 
         edgebar =  " +===+===+===+===+===+===+===+"
@@ -52,13 +53,11 @@ class Board:
 
         # assembles row2print rows, crossbars, and feet into nicely
         # formatted triple-quoted string for displaying the board
-        board2print = """
-           1   2   3   4   5   6   7
-        """
+        board2print = """   1   2   3   4   5   6   7"""
         board2print += "\n" + edgebar
-        for y in range(height - 1):
+        for y in range(self.height-1):
             board2print += "\n" + printRow(y) + "\n" + crossbar
-        board2print += "\n" + printRow(height) + edgebar
+        board2print += "\n" + printRow(self.height-1) + "\n" + edgebar
         board2print += "\n" + feet
             
         # board2print for empty board will look like:
@@ -83,41 +82,50 @@ class Board:
 
         return board2print
 
+    # check whether column is full
+    def columnFull(self, column):
+        """Returns True if every cell in a column has been filled."""
+
+        if self.array[0][column] == "B" or self.array[0][column] == "R": ### should be able to just be "if self.array[0][col]" bc default is 0 ~ ?
+            return True
+        else:
+            return False
+
     # drop checker
-    def dropChecker(self, column, turn):
+    def dropChecker(self, column, turn, names):
         """Modifies the board array by adding a checker of the player's
         color in the bottom-most free spot in the given column."""
 
         column -= 1 # converts label column to column index
 
         # determines the lowest free cell
-        if board[5][column] == 0:
+        if self.array[5][column] == 0:
             row = 5
-        elif board[4][column] == 0:
+        elif self.array[4][column] == 0:
             row = 4
-        elif board[3][column] == 0:
+        elif self.array[3][column] == 0:
             row = 3
-        elif board[2][column] == 0:
+        elif self.array[2][column] == 0:
             row = 2
-        elif board[1][column] == 0:
+        elif self.array[1][column] == 0:
             row = 1
         else:
             row = 0
 
         # assigns the cell "B" for black or "R" for red
         # based on whose turn it is
-        board[row][column] = names[turn][1][0].upper()
+        self.array[row][column] = names[turn][1][0].upper()
         
         return row, column
 
     # checks for a winning combo and returns either winner's index or
     # False if there is no winning combo
-    def checkWinner(self, row, column):
+    def checkWinner(self, row, column, names):
         """Seeks four-in-a-rows horizontally, vertically, and diagonally
         from the cell; returns winner's index if there is a winning
-        combination, or False otherwise."""
+        combination, or False otherwise.""" ### figure out why insta-winner
 
-        color = board[row][column]
+        color = self.array[row][column]
 
         # derives winner index from color initial
         if color == "B":
@@ -149,7 +157,7 @@ class Board:
                 i += incI
                 j += incJ
                 if 0 <= i <= 5 and 0 <= j <= 6:
-                    current = board[i][j]
+                    current = self.array[i][j]
                 else:
                     break
 
@@ -167,7 +175,7 @@ class Board:
                 i -= incI
                 j -= incJ
                 if 0 <= i <= 5 and 0 <= j <= 6:
-                    current = board[i][j]
+                    current = self.array[i][j]
                 else:
                     break
 
