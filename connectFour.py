@@ -87,6 +87,7 @@ def runGame():
     for i in range(42):
         move = getMove(turn)
         row, column = board.dropChecker(move, turn, names)
+        print(board)
         winner = board.checkWinner(row, column, names)
         if winner:
             announceWinner(winner)

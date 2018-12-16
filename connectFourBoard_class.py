@@ -7,7 +7,7 @@
 Provides a class for a Connect Four board and the
 interactions needed to play a game on it."""
 
-# parameters:
+# attributes:
 # - width = number of cells wide
 # - height = number of cells high
 # - array = a [width x height] array representing every cell on the board
@@ -25,12 +25,12 @@ class Board:
         self.width = width
         self.height = height
 
-        # creates an empty array with the correct dimensions
-        row = []
-        for x in range(width):
-            row.append(0)
+        # creates an empty array with the given dimensions
         self.array = []
-        for y in range(height):
+        for j in range(height):
+            row = []
+            for i in range(width):
+                row.append(" ")
             self.array.append(row)
 
     # print board
@@ -49,7 +49,7 @@ class Board:
 
         edgebar =  " +===+===+===+===+===+===+===+"
         crossbar = " +---+---+---+---+---+---+---+"
-        feet = " |" + " " * 27 + "|" + "\n" + "==" + " " * 27 + "=="
+        feet = " |" + " "*27 + "|" + "\n" + "==" + " "*27 + "=="
 
         # assembles row2print rows, crossbars, and feet into nicely
         # formatted triple-quoted string for displaying the board
@@ -58,7 +58,7 @@ class Board:
         for y in range(self.height-1):
             board2print += "\n" + printRow(y) + "\n" + crossbar
         board2print += "\n" + printRow(self.height-1) + "\n" + edgebar
-        board2print += "\n" + feet
+        board2print += "\n" + feet + "\n"
             
         # board2print for empty board will look like:
         '''
@@ -99,15 +99,15 @@ class Board:
         column -= 1 # converts label column to column index
 
         # determines the lowest free cell
-        if self.array[5][column] == 0:
+        if self.array[5][column] == " ":
             row = 5
-        elif self.array[4][column] == 0:
+        elif self.array[4][column] == " ":
             row = 4
-        elif self.array[3][column] == 0:
+        elif self.array[3][column] == " ":
             row = 3
-        elif self.array[2][column] == 0:
+        elif self.array[2][column] == " ":
             row = 2
-        elif self.array[1][column] == 0:
+        elif self.array[1][column] == " ":
             row = 1
         else:
             row = 0
